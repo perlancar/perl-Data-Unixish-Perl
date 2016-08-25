@@ -16,6 +16,11 @@ our %SPEC;
 $SPEC{versort} = {
     v => 1.1,
     summary => 'Sort version numbers',
+    description => <<'_',
+
+Invalid versions are put at the back.
+
+_
     args => {
         %common_args,
         reverse => {
@@ -58,7 +63,9 @@ sub versort {
         }
 
       L1:
-        $reverse * $cmp;
+        $cmp = $reverse * $cmp;
+        #say "D:a=<$a->[0]>, b=<$b->[0]>, cmp=<$cmp>";
+        $cmp;
     } @buf;
 
     push @$out, $_->[0] for @buf;
@@ -75,15 +82,15 @@ In Perl:
 
  use Data::Unixish qw(lduxl);
  my @res;
- @res = lduxl('sort', "1.1", "1.10", "1.9"); # => ("1.1", "1.9", "1.10")
- @res = lduxl([sort => {reverse=>1}], "1.1", "1.10", "1.9"); # => ("1.10", "1.9", "1.1")
+ @res = lduxl('sort', "v1.1", "v1.10", "v1.9"); # => ("v1.1", "v1.9", "v1.10")
+ @res = lduxl([sort => {reverse=>1}], "v1.1", "v1.10", "v1.9"); # => ("v1.10", "v1.9", "v1.1")
 
 In command line:
 
- % echo -e "1.1\n1.10\n1.9" | dux Perl::versort --format=text-simple
- 1.1
- 1.9
- 1.10
+ % echo -e "v1.1\nv1.9\nv1.10" | dux Perl::versort --format=text-simple
+ v1.1
+ v1.9
+ v1.10
 
 
 =head1 SEE ALSO
